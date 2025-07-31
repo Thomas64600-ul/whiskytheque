@@ -1,6 +1,6 @@
 import express from "express";
 import { whiskyController } from "../controllers/whiskyController.js";
-import { whiskyValidator } from "../middleware/whiskyValidator.js";
+import { whiskyValidator } from "../middlewares/whiskyValidator.js";
 
 const router = express.Router();
 

@@ -1,54 +1,35 @@
-import express from "express";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import path from "path";
-import { fileURLToPath } from "url";
-
-
-// Middlewares personnalisés
-import { verifyToken } from "./middleware/auth.js";
-import { upload } from "./middleware/upload.js";
-
-// Routes
-import authRoutes from "./routes/authRoutes.js";
-import whiskyRoutes from "./routes/whiskyRoutes.js";
-import tastingRoutes from "./routes/tastingRoutes.js";
-
-
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
+import db from './config/db.js'; // OK — db est le pool
+import authRoutes from './routes/authRoutes.js';
+import deleteUserCron from "./middlewares/deleteUser.js";
+import auditDependencies from './middlewares/auditDependencies.js'
+import { limiter } from './middlewares/rateLimiter.js';
+import whiskyRoutes from './routes/whiskyRoutes.js';
+import tastingRoutes from './routes/tastingRoutes.js';
 dotenv.config();
+
 const app = express();
-
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
 
-
-app.use("/public", express.static(path.join(__dirname, "public")));
-
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
-
-app.use("/api/auth", authRoutes);
+// Démarre le cron
+deleteUserCron.start();
+auditDependencies.start()
+app.use(limiter)
+app.use('/api/auth', authRoutes);
 app.use("/api/whiskys", whiskyRoutes);
 app.use("/api/tastings", tastingRoutes);
 
 
-app.get("/", (req, res) => {
-  res.send("Bienvenue sur la Whiskythèque 🍷");
-});
-
-
-app.use((req, res) => {
-  res.status(404).json({ message: "Route non trouvée." });
-});
-
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`Serveur démarré sur http://localhost:${PORT}`)
-);
+
+const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err);
+  server.close(() => process.exit(1));
+});

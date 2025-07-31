@@ -1,6 +1,6 @@
 import express from "express";
 import tastingController from "../controllers/tastingController.js";
-import { tastingValidationRules, validateTasting } from "../middleware/tastingValidator.js";
+import { tastingValidationRules, validateTasting } from "../middlewares/tastingValidator.js";
 
 const router = express.Router();
 

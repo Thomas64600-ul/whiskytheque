@@ -1,40 +1,35 @@
 {
-  "name": "wiskhytheque",
+  "name": "whiskytheque",
   "version": "1.0.0",
-  "description": "Une apllication de bibliothèque de wisky ",
   "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
-    "dev": "nodemon app.js"
-  },
-  "repository": "",
-  "keywords": [],
-  "author": "",
+  "repository": "https://github.com/Thomas64600-ul/whiskytheque.git",
+  "author": "thomasdetraversay@gmail.com",
+  "license": "MIT",
   "type": "module",
-  "license": "ISC",
-  "bugs": {},
-  "url": {},
-  "homepage": "",
   "dependencies": {
-    "bcrypt": "^6.0.0",
+    "axios": "^1.11.0",
+    "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "dotenv": "^17.0.1",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.2.0",
     "express": "^5.1.0",
-    "express-session": "^1.18.1",
+    "express-rate-limit": "^8.0.1",
     "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
+    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.1",
-    "mysql": "^2.18.1",
-    "mysql2": "^3.14.1",
-    "nodemailer": "^7.0.5",
-    "twig": "^1.17.1"
+    "mongoose": "^8.16.4",
+    "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.5"
   },
   "devDependencies": {
-    "@eslint/js": "^9.30.1",
-    "eslint": "^9.30.1",
-    "globals": "^16.3.0",
     "nodemon": "^3.1.10"
+  },
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   }
 }
