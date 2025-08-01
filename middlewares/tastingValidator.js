@@ -18,16 +18,13 @@ export const tastingValidationRules = [
 
   body("whiskyId")
     .notEmpty()
-    .withMessage("L'ID du whisky est requis")
-    // si c'est un UUID, tu peux ajouter :
-    //.isUUID()
-    //.withMessage("L'ID du whisky doit être un UUID valide"),
+    .withMessage("L'ID du whisky est requis"),
+    // .isUUID()
+    // .withMessage("L'ID du whisky doit être un UUID valide"),
 
   body("userId")
     .notEmpty()
     .withMessage("L'ID de l'utilisateur est requis")
-    // même remarque que pour whiskyId sur la validation du format
+    // .isUUID()
+    // .withMessage("L'ID de l'utilisateur doit être un UUID valide")
 ];
-
-export const validateTasting = validate;
-
