@@ -1,5 +1,4 @@
 import { body } from "express-validator";
-import { validate } from "./validate.js";
 
 export const whiskyValidator = [
   body("nom")
@@ -21,9 +20,10 @@ export const whiskyValidator = [
     .withMessage("Le pays ne doit pas dépasser 100 caractères."),
 
   body("categorie")
-  .notEmpty().withMessage("La catégorie est requise.")
-  .isIn(["single", "single malt", "blend", "bourbon", "rye", "scotch", "blended malt"])
-  .withMessage("Catégorie invalide."),
+    .notEmpty()
+    .withMessage("La catégorie est requise.")
+    .isIn(["single", "single malt", "blend", "bourbon", "rye", "scotch", "blended malt"])
+    .withMessage("Catégorie invalide."),
 
   body("age")
     .optional()
@@ -40,6 +40,4 @@ export const whiskyValidator = [
     .optional()
     .isLength({ max: 1000 })
     .withMessage("La description ne doit pas dépasser 1000 caractères."),
-
-  validate
 ];

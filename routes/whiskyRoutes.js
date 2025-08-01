@@ -1,22 +1,28 @@
 import express from "express";
 import { whiskyController } from "../controllers/whiskyController.js";
 import { whiskyValidator } from "../middlewares/whiskyValidator.js";
+import { param } from "express-validator";
+import { protect, authorize } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-// ✅ Route pour créer un whisky avec validation
-router.post("/", whiskyValidator, whiskyController.createWhisky);
+const validateIdParam = [
+  param("id").isInt().withMessage("L'ID doit être un entier"),
+];
 
-// ✅ Route pour mettre à jour un whisky avec validation
-router.put("/:id", whiskyValidator, whiskyController.updateWhisky);
+// Création (admin uniquement)
+router.post("/", protect, authorize("admin"), whiskyValidator, whiskyController.createWhisky);
 
-// ✅ Route pour récupérer un whisky par son ID
-router.get("/:id", whiskyController.getWhiskyById);
+// Mise à jour (admin uniquement)
+router.put("/:id", protect, authorize("admin"), validateIdParam, whiskyValidator, whiskyController.updateWhisky);
 
-// ✅ Route pour récupérer tous les whiskys
+// Récupérer un whisky par ID
+router.get("/:id", validateIdParam, whiskyController.getWhiskyById);
+
+// Récupérer tous les whiskys
 router.get("/", whiskyController.getAllWhiskys);
 
-// ✅ Route pour supprimer un whisky
-router.delete("/:id", whiskyController.deleteWhisky);
+// Suppression (admin uniquement)
+router.delete("/:id", protect, authorize("admin"), validateIdParam, whiskyController.deleteWhisky);
 
 export default router;

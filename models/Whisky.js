@@ -1,6 +1,6 @@
 import db from "../config/db.js";
 
-export const Whisky = {
+const Whisky = {
   create: async (whisky) => {
     const sql = `
       INSERT INTO whiskys (name, brand, country, category, degree, year, description, image, stock)
@@ -18,7 +18,7 @@ export const Whisky = {
       whisky.stock ?? 0
     ];
     const [result] = await db.execute(sql, params);
-    return result;
+    return { id: result.insertId, ...whisky };
   },
 
   update: async (id, whisky) => {
@@ -49,7 +49,7 @@ export const Whisky = {
   },
 
   findAll: async () => {
-    const [rows] = await db.execute('SELECT * FROM whiskys');
+    const [rows] = await db.execute('SELECT * FROM whiskys ORDER BY name');
     return rows;
   },
 
@@ -58,4 +58,6 @@ export const Whisky = {
     return result;
   }
 };
+
+export default Whisky;
 

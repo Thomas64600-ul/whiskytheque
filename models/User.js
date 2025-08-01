@@ -1,6 +1,6 @@
 import db from "../config/db.js";
 
-export const User = {
+const User = {
   create: async (user) => {
     const sql = `
       INSERT INTO users (email, password, role, image, contact)
@@ -11,26 +11,31 @@ export const User = {
       user.password,
       user.role || "user",
       user.image || null,
-      user.contact || null
+      user.contact || null,
     ]);
     return result;
   },
 
   findByEmail: async (email) => {
     const [rows] = await db.execute(
-      'SELECT * FROM users WHERE email = ?',
+      "SELECT * FROM users WHERE email = ?",
       [email]
     );
-    return rows[0]; 
+    return rows[0];
   },
 
   verifyUser: async (email) => {
     const now = new Date();
     await db.execute(
-      'UPDATE users SET created_at = ? WHERE email = ?',
+      "UPDATE users SET created_at = ? WHERE email = ?",
       [now, email]
     );
-  }
+  },
+
+  findById: async (id) => {
+    const [rows] = await db.execute("SELECT * FROM users WHERE id = ?", [id]);
+    return rows[0];
+  },
 };
 
 export default User;

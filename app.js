@@ -1,7 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import db from './config/db.js'; // OK — db est le pool
+
 import authRoutes from './routes/authRoutes.js';
 import deleteUserCron from "./middlewares/deleteUser.js";
 import auditDependencies from './middlewares/auditDependencies.js'

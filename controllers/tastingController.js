@@ -20,18 +20,19 @@ const tastingController = {
     }
   },
 
-  getTastingById: async (req, res) => {
-    try {
-      const id = req.params.id;
-      const tasting = await Tasting.findById(id);
-      if (!tasting || tasting.length === 0) {
-        return res.status(404).json({ message: "Dégustation non trouvée" });
-      }
-      res.status(200).json(tasting[0]);
-    } catch (error) {
-      res.status(500).json({ message: "Erreur lors de la récupération de la dégustation", error: error.message });
+getTastingById: async (req, res) => {
+  try {
+    const id = req.params.id;
+    const tasting = await Tasting.findById(id);
+    if (!tasting) {
+      return res.status(404).json({ message: "Dégustation non trouvée" });
     }
-  },
+    res.status(200).json(tasting);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération de la dégustation", error: error.message });
+  }
+},
+
 
   getTastingsByUser: async (req, res) => {
     try {
