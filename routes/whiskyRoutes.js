@@ -1,8 +1,9 @@
 import express from "express";
 import { whiskyController } from "../controllers/whiskyController.js";
-import { whiskyValidator } from "../middlewares/whiskyValidator.js";
+import { whiskyValidator } from "../validations/whiskyValidator.js";
 import { param } from "express-validator";
 import { protect, authorize } from "../middlewares/auth.js";
+import { validateRequest } from "../middlewares/validateRequest.js";
 
 const router = express.Router();
 
@@ -24,5 +25,7 @@ router.get("/", whiskyController.getAllWhiskys);
 
 // Suppression (admin uniquement)
 router.delete("/:id", protect, authorize("admin"), validateIdParam, whiskyController.deleteWhisky);
+
+router.post("/", whiskyValidator, validateRequest, whiskyController.createWhisky);
 
 export default router;

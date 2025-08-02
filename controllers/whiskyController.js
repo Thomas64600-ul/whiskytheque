@@ -1,4 +1,4 @@
-import { Whisky } from "../models/Whisky.js";
+import  Whisky  from "../models/Whisky.js";
 
 export const whiskyController = {
   createWhisky: async (req, res) => {
@@ -9,7 +9,7 @@ export const whiskyController = {
   country: req.body.pays,
   category: req.body.categorie,
   degree: req.body.degre,
-  year: req.body.annee ?? null,
+  year: req.body.year ?? null,
   description: req.body.description ?? null,
   image: req.body.image ?? null,
   stock: req.body.stock ?? 0
