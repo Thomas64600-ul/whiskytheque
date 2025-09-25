@@ -10,7 +10,7 @@ import tastingRoutes from "./routes/tastingRoutes.js";
 
 import deleteUserCron from "./middlewares/deleteUser.js";
 import auditDependencies from "./middlewares/auditDependencies.js";
-import { limiter } from "./middlewares/ratelimiter.js";
+import { limiter } from "./middlewares/rateLimiter.js";
 
 dotenv.config();
 
