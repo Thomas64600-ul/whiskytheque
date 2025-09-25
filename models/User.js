@@ -13,29 +13,26 @@ const User = {
       user.image || null,
       user.contact || null,
     ]);
-    return result;
+    return { id: result.insertId, ...user };
   },
 
   findByEmail: async (email) => {
-    const [rows] = await db.execute(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
-    );
-    return rows[0];
+    const [rows] = await db.execute("SELECT * FROM users WHERE email = ?", [email]);
+    return rows[0] || null;
   },
 
   verifyUser: async (email) => {
-    const now = new Date();
     await db.execute(
-      "UPDATE users SET created_at = ? WHERE email = ?",
-      [now, email]
+      "UPDATE users SET is_verified = ? WHERE email = ?",
+      [true, email]
     );
   },
 
   findById: async (id) => {
     const [rows] = await db.execute("SELECT * FROM users WHERE id = ?", [id]);
-    return rows[0];
+    return rows[0] || null;
   },
 };
 
 export default User;
+

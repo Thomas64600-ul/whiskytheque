@@ -1,26 +1,23 @@
-// validations/tastingValidation.js
 import Joi from "joi";
 
 export const tastingSchema = Joi.object({
-  name: Joi.string()
-    .trim()
-    .min(1)
+  user_id: Joi.number()
+    .integer()
     .required()
     .messages({
-      "string.empty": "Le nom est requis",
-      "any.required": "Le nom est requis"
+      "number.base": "L'ID de l'utilisateur doit être un entier",
+      "any.required": "L'ID de l'utilisateur est requis"
     }),
 
-  description: Joi.string()
-    .trim()
-    .min(1)
+  whisky_id: Joi.number()
+    .integer()
     .required()
     .messages({
-      "string.empty": "La description est requise",
-      "any.required": "La description est requise"
+      "number.base": "L'ID du whisky doit être un entier",
+      "any.required": "L'ID du whisky est requis"
     }),
 
-  rating: Joi.number()
+  note: Joi.number()
     .integer()
     .min(1)
     .max(5)
@@ -32,19 +29,13 @@ export const tastingSchema = Joi.object({
       "any.required": "La note est requise"
     }),
 
-  whiskyId: Joi.string()
-    .required()
-    // .guid() // Décommente si tu utilises des UUID
-    .messages({
-      "string.empty": "L'ID du whisky est requis",
-      "any.required": "L'ID du whisky est requis"
-    }),
+  comment: Joi.string()
+    .max(1000)
+    .optional(),
 
-  userId: Joi.string()
-    .required()
-    // .guid() // Idem ici
+  date_tasting: Joi.date()
+    .optional()
     .messages({
-      "string.empty": "L'ID de l'utilisateur est requis",
-      "any.required": "L'ID de l'utilisateur est requis"
+      "date.base": "La date doit être une date valide"
     }),
 });

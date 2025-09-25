@@ -4,11 +4,12 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Vérifie la présence et la validité du token
 export const protect = (req, res, next) => {
-  const token = req.cookies.token || '';
+  const token = req.cookies.token || "";
 
   if (!token) {
-    return res.status(401).json({ message: 'Non authentifié, token manquant' });
+    return res.status(401).json({ message: "Non authentifié, token manquant" });
   }
 
   try {
@@ -16,19 +17,35 @@ export const protect = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    const msg = process.env.NODE_ENV === "development" ? error.message : 'Token invalide ou expiré';
+    const msg =
+      process.env.NODE_ENV === "development"
+        ? error.message
+        : "Token invalide ou expiré";
     return res.status(401).json({ message: msg });
   }
 };
 
-export const authorize = (...roles) => (req, res, next) => {
-  if (!req.user) return res.status(401).json({ message: 'Non authentifié' });
+// Vérifie les rôles autorisés
+export const authorize = (...allowedRoles) => {
+  return (req, res, next) => {
+    const user = req.user;
 
-  if (!roles.includes(req.user.role)) {
-    return res.status(403).json({ message: 'Accès interdit: rôle insuffisant' });
-  }
+    if (!user) {
+      return res.status(401).json({ message: "Utilisateur non authentifié." });
+    }
 
-  next();
+    if (typeof user.role !== "string") {
+      return res.status(400).json({ message: "Rôle utilisateur invalide." });
+    }
+
+    if (!allowedRoles.includes(user.role)) {
+      return res
+        .status(403)
+        .json({ message: "Accès refusé : rôle non autorisé." });
+    }
+
+    next();
+  };
 };
 
 

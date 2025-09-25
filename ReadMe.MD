@@ -1,5 +1,5 @@
 
-# 🥃 Whiskythèque
+# Whiskythèque
 
 Une application de gestion de whiskys et de dégustations, conçue en Node.js avec Express, permettant :
 - La création, la mise à jour et la suppression de whiskys.
@@ -8,7 +8,7 @@ Une application de gestion de whiskys et de dégustations, conçue en Node.js av
 - L’envoi d’e-mails via Nodemailer.
 - Le stockage d’images avec Cloudinary.
 
-## 🚀 Stack technique
+## Stack technique
 
 - **Back-end :** Node.js, Express.js
 - **Base de données :** MySQL (PHPMyAdmin)
@@ -18,7 +18,7 @@ Une application de gestion de whiskys et de dégustations, conçue en Node.js av
 - **Fichiers & médias :** Multer, Cloudinary
 - **Envoi d’e-mail :** Nodemailer
 
-## 📂 Arborescence du projet
+## Arborescence du projet
 
 ```text
 📁 WISKYTHEQUE/

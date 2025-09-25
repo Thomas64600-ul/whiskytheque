@@ -1,4 +1,3 @@
-// whiskyRoutes.js - Version corrigée
 import express from "express";
 import { whiskyController } from "../controllers/whiskyController.js";
 import { whiskyValidator } from "../validations/whiskyValidator.js";
@@ -10,30 +9,31 @@ const router = express.Router();
 
 const validateIdParam = [
   param("id").isInt().withMessage("L'ID doit être un entier"),
-  validateRequest // Ajouté ici
+  validateRequest
 ];
 
 // Routes protégées Admin
-router.post("/", 
-  protect, 
-  authorize("admin"), 
-  whiskyValidator, 
-  validateRequest, // Ajouté
+router.post("/",
+  protect,
+  authorize("admin"),
+  whiskyValidator,
+  validateRequest,
   whiskyController.createWhisky
 );
 
-router.put("/:id", 
-  protect, 
-  authorize("admin"), 
-  validateIdParam, 
-  whiskyValidator, 
+router.put("/:id",
+  protect,
+  authorize("admin"),
+  validateIdParam,
+  whiskyValidator,
+  validateRequest, // ✅ ajouté
   whiskyController.updateWhisky
 );
 
-router.delete("/:id", 
-  protect, 
-  authorize("admin"), 
-  validateIdParam, 
+router.delete("/:id",
+  protect,
+  authorize("admin"),
+  validateIdParam,
   whiskyController.deleteWhisky
 );
 

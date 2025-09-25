@@ -10,17 +10,15 @@ if (!fs.existsSync(uploadDir)) {
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase(); // Normaliser l'extension
-    const base = path.basename(file.originalname, ext).replace(/\s+/g, '-'); // Remplacer espaces pour éviter soucis
+    const ext = path.extname(file.originalname).toLowerCase();
+    const base = path.basename(file.originalname, ext).replace(/\s+/g, "-");
     const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(null, `${base}-${unique}${ext}`);
   },
 });
 
-// Filtrage des fichiers, en vérifiant aussi le mimetype complet
 const fileFilter = (req, file, cb) => {
-  const allowedMimeTypes = ["image/jpeg", "image/jpg", "image/png"];
-  
+  const allowedMimeTypes = ["image/jpeg", "image/jpg", "image/png", "image/pjpeg"];
   if (allowedMimeTypes.includes(file.mimetype.toLowerCase())) {
     cb(null, true);
   } else {
@@ -29,3 +27,4 @@ const fileFilter = (req, file, cb) => {
 };
 
 export const upload = multer({ storage, fileFilter });
+

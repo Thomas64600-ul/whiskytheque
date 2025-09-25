@@ -28,6 +28,7 @@ function auditDependencies() {
   });
 }
 
+// Tous les jours à minuit
 const auditTask = cron.schedule("0 0 0 * * *", () => {
   console.log("Démarrage du cron d'audit des dépendances...");
   auditDependencies();

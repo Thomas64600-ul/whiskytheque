@@ -1,11 +1,11 @@
-import { Tasting } from "../models/Tasting.js";
+import Tasting from "../models/Tasting.js";
 
 const tastingController = {
   createTasting: async (req, res) => {
     try {
       const tasting = req.body;
       const result = await Tasting.create(tasting);
-      res.status(201).json({ message: "Dégustation créée avec succès", id: result.insertId });
+      res.status(201).json({ message: "Dégustation créée avec succès", tasting: result });
     } catch (error) {
       res.status(500).json({ message: "Erreur lors de la création de la dégustation", error: error.message });
     }
@@ -20,19 +20,18 @@ const tastingController = {
     }
   },
 
-getTastingById: async (req, res) => {
-  try {
-    const id = req.params.id;
-    const tasting = await Tasting.findById(id);
-    if (!tasting) {
-      return res.status(404).json({ message: "Dégustation non trouvée" });
+  getTastingById: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const tasting = await Tasting.findById(id); // ⚠️ à coder dans Tasting.js
+      if (!tasting) {
+        return res.status(404).json({ message: "Dégustation non trouvée" });
+      }
+      res.status(200).json(tasting);
+    } catch (error) {
+      res.status(500).json({ message: "Erreur lors de la récupération de la dégustation", error: error.message });
     }
-    res.status(200).json(tasting);
-  } catch (error) {
-    res.status(500).json({ message: "Erreur lors de la récupération de la dégustation", error: error.message });
-  }
-},
-
+  },
 
   getTastingsByUser: async (req, res) => {
     try {
@@ -58,8 +57,8 @@ getTastingById: async (req, res) => {
     try {
       const id = req.params.id;
       const data = req.body;
-      const result = await Tasting.update(id, data);
-      if (result.affectedRows === 0) {
+      const success = await Tasting.update(id, data);
+      if (!success) {
         return res.status(404).json({ message: "Dégustation non trouvée" });
       }
       res.status(200).json({ message: "Dégustation mise à jour avec succès" });
@@ -68,11 +67,11 @@ getTastingById: async (req, res) => {
     }
   },
 
-   deleteTasting: async (req, res) => {
+  deleteTasting: async (req, res) => {
     try {
       const id = req.params.id;
-      const result = await Tasting.delete(id);
-      if (result.affectedRows === 0) {
+      const success = await Tasting.delete(id);
+      if (!success) {
         return res.status(404).json({ message: "Dégustation non trouvée" });
       }
       res.status(200).json({ message: "Dégustation supprimée avec succès" });
@@ -83,3 +82,4 @@ getTastingById: async (req, res) => {
 };
 
 export default tastingController;
+

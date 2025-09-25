@@ -1,14 +1,13 @@
 import cron from "node-cron";
-import db from "../config/db.js"; // ton pool MySQL
+import db from "../config/db.js"; 
 
 async function deleteUnverifiedUsers() {
-  // Date il y a 3 jours, formatée pour MySQL
   const threeDaysAgo = new Date(Date.now() - 72 * 60 * 60 * 1000);
-  const formattedDate = threeDaysAgo.toISOString().slice(0, 19).replace('T', ' ');
+  const formattedDate = threeDaysAgo.toISOString().slice(0, 19).replace("T", " ");
 
   const sql = `
     DELETE FROM users
-    WHERE isVerified = 0
+    WHERE is_verified = 0
     AND created_at < ?
   `;
 
@@ -20,10 +19,11 @@ async function deleteUnverifiedUsers() {
   }
 }
 
-// Planifie le cron : tous les 3 jours à 14h12
+// Tous les 3 jours à 14h12
 const task = cron.schedule("12 14 */3 * *", () => {
   console.log("Cron job démarré pour supprimer les utilisateurs non vérifiés...");
   deleteUnverifiedUsers();
 });
 
 export default task;
+
