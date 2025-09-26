@@ -1,11 +1,12 @@
-import db from "../config/db.js";
+import pool from "../config/db.js";
 
 const Whisky = {
   create: async (whisky) => {
     try {
       const sql = `
         INSERT INTO whiskys (name, brand, country, category, degree, year, description, image, stock)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING *
       `;
       const params = [
         whisky.name,
@@ -18,8 +19,8 @@ const Whisky = {
         whisky.image ?? null,
         whisky.stock ?? 0
       ];
-      const [result] = await db.execute(sql, params);
-      return { id: result.insertId, ...whisky };
+      const result = await pool.query(sql, params);
+      return result.rows[0]; // 👈 retourne l'objet créé
     } catch (err) {
       throw new Error("Erreur lors de la création du whisky : " + err.message);
     }
@@ -29,8 +30,10 @@ const Whisky = {
     try {
       const sql = `
         UPDATE whiskys
-        SET name = ?, brand = ?, country = ?, category = ?, degree = ?, year = ?, description = ?, image = ?, stock = ?
-        WHERE id = ?
+        SET name = $1, brand = $2, country = $3, category = $4, degree = $5,
+            year = $6, description = $7, image = $8, stock = $9
+        WHERE id = $10
+        RETURNING *
       `;
       const params = [
         whisky.name,
@@ -44,26 +47,26 @@ const Whisky = {
         whisky.stock ?? 0,
         id
       ];
-      await db.execute(sql, params);
-      return { id, ...whisky }; // 👈 plus cohérent
+      const result = await pool.query(sql, params);
+      return result.rows[0]; // 👈 retourne l'objet mis à jour
     } catch (err) {
       throw new Error("Erreur lors de la mise à jour du whisky : " + err.message);
     }
   },
 
   findById: async (id) => {
-    const [rows] = await db.execute("SELECT * FROM whiskys WHERE id = ?", [id]);
-    return rows[0] || null;
+    const result = await pool.query("SELECT * FROM whiskys WHERE id = $1", [id]);
+    return result.rows[0] || null;
   },
 
   findAll: async () => {
-    const [rows] = await db.execute("SELECT * FROM whiskys ORDER BY name");
-    return rows;
+    const result = await pool.query("SELECT * FROM whiskys ORDER BY name");
+    return result.rows;
   },
 
   delete: async (id) => {
-    const [result] = await db.execute("DELETE FROM whiskys WHERE id = ?", [id]);
-    return result.affectedRows > 0; // 👈 retourne un booléen
+    const result = await pool.query("DELETE FROM whiskys WHERE id = $1 RETURNING *", [id]);
+    return result.rowCount > 0; // 👈 retourne un booléen
   }
 };
 

@@ -4,32 +4,35 @@ const User = {
   create: async (user) => {
     const sql = `
       INSERT INTO users (email, password, role, image, contact)
-      VALUES (?, ?, ?, ?, ?)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id
     `;
-    const [result] = await db.execute(sql, [
+    const values = [
       user.email,
       user.password,
       user.role || "user",
       user.image || null,
       user.contact || null,
-    ]);
-    return { id: result.insertId, ...user };
+    ];
+
+    const { rows } = await db.query(sql, values);
+    return { id: rows[0].id, ...user };
   },
 
   findByEmail: async (email) => {
-    const [rows] = await db.execute("SELECT * FROM users WHERE email = ?", [email]);
+    const sql = "SELECT * FROM users WHERE email = $1";
+    const { rows } = await db.query(sql, [email]);
     return rows[0] || null;
   },
 
   verifyUser: async (email) => {
-    await db.execute(
-      "UPDATE users SET is_verified = ? WHERE email = ?",
-      [true, email]
-    );
+    const sql = "UPDATE users SET is_verified = $1 WHERE email = $2";
+    await db.query(sql, [true, email]);
   },
 
   findById: async (id) => {
-    const [rows] = await db.execute("SELECT * FROM users WHERE id = ?", [id]);
+    const sql = "SELECT * FROM users WHERE id = $1";
+    const { rows } = await db.query(sql, [id]);
     return rows[0] || null;
   },
 };
