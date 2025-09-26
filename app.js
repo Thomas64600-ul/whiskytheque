@@ -16,31 +16,49 @@ dotenv.config();
 
 const app = express();
 
+// =============================
 // Middlewares globaux
+// =============================
 app.use(express.json());
 app.use(cookieParser());
-app.use(helmet()); // sécurise les headers HTTP
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true })); // autorise ton front
+app.use(helmet()); 
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "*", // accepte ton front
+    credentials: true,
+  })
+);
 
-// ⚡ Cron jobs (juste importer suffit, pas besoin de .start())
+// =============================
+// Cron jobs
+// =============================
 deleteUserCron;
 auditDependencies;
 
+// =============================
+// Limiter (à appliquer AVANT les routes auth)
+// =============================
+app.use("/api/auth/login", limiter);
+app.use("/api/auth/register", limiter);
+
+// =============================
 // Routes
+// =============================
 app.use("/api/auth", authRoutes);
 app.use("/api/whiskys", whiskyRoutes);
 app.use("/api/tastings", tastingRoutes);
 
-// Exemple : limiter uniquement login et register
-app.use("/api/auth/login", limiter);
-app.use("/api/auth/register", limiter);
-
+// =============================
+// Démarrage serveur
+// =============================
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () =>
   console.log(`🚀 Server running on port ${PORT}`)
 );
 
-// Gestion des promesses non catchées
+// =============================
+// Gestion des erreurs globales
+// =============================
 process.on("unhandledRejection", (err) => {
   console.error("Unhandled Rejection:", err);
   server.close(() => process.exit(1));
