@@ -4,11 +4,13 @@ import db from "../config/db.js";
 const User = {
   create: async (user) => {
     const sql = `
-      INSERT INTO users (email, password, role)
-      VALUES ($1, $2, $3)
+      INSERT INTO users (firstname, lastname, email, password, role)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING id
     `;
     const values = [
+      user.firstname,
+      user.lastname,
       user.email,
       user.password,
       user.role || "user",
@@ -24,7 +26,7 @@ const User = {
 
   verifyUser: async (email) => {
     await db.query(
-      "UPDATE users SET is_verified = true WHERE email = $1",
+      "UPDATE users SET is_verified = true, updated_at = NOW() WHERE email = $1",
       [email]
     );
   },
@@ -36,5 +38,6 @@ const User = {
 };
 
 export default User;
+
 
 
