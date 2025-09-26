@@ -235,3 +235,39 @@ export async function logout(req, res) {
     res.status(500).json({ message: "Erreur lors de la déconnexion" });
   }
 }
+// ==========================
+// RESEND VERIFICATION EMAIL
+// ==========================
+export async function resendVerificationEmail(req, res) {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email requis." });
+    }
+
+    const user = await User.findByEmail(email);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur introuvable." });
+    }
+    if (user.is_verified) {
+      return res.status(400).json({ message: "Compte déjà vérifié." });
+    }
+
+    // Générer un nouveau token
+    const verificationToken = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1d" });
+    const verificationUrl = `${CLIENT_URL}/api/auth/verify/${verificationToken}`;
+
+    await sendEmail({
+      to: email,
+      subject: "Nouveau lien de vérification",
+      html: `Bonjour,<br><br>Voici un nouveau lien pour vérifier votre compte : 
+             <a href="${verificationUrl}">Vérifier mon compte</a><br><br>Ce lien est valable 24h.`,
+    });
+
+    res.json({ message: "Un nouvel email de vérification a été envoyé." });
+  } catch (error) {
+    console.error("Resend verification error:", error);
+    res.status(500).json({ message: "Erreur serveur." });
+  }
+}

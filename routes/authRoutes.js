@@ -25,7 +25,7 @@ router.post("/logout", logout);
 
 // Exemple de routes protégées
 router.get("/user-profile", protect, (req, res) => {
-  res.json({ message: `Bienvenue ${req.user.email}` }); // ✅ corrigé (email au lieu de name)
+  res.json({ message: `Bienvenue ${req.user.email}` });
 });
 
 router.get("/admin-panel", protect, authorize("admin"), (req, res) => {
